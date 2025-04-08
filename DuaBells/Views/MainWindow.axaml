@@ -3,7 +3,7 @@
         xmlns:vm="using:DuaBells.ViewModels"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        mc:Ignorable="d" d:DesignHeight="800" d:DesignWidth="450"
         x:Class="DuaBells.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Icon="/Assets/avalonia-logo.ico"
@@ -15,6 +15,35 @@
         <vm:MainWindowViewModel/>
     </Design.DataContext>
 
-    <TextBlock Text="{Binding Greeting}" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+	<Grid RowDefinitions="Auto,*,Auto" Margin="20" x:Name="Root">
+		<TextBlock Text="Dua Bell" FontWeight="Black"
+				   FontSize="24" Grid.Row="0"/>
 
+		<ScrollViewer Grid.Row="1">
+			<ItemsControl ItemsSource="{Binding ToDoItems}">
+				<ItemsControl.ItemTemplate>
+					<DataTemplate DataType="vm:ToDoItemViewModel">
+						<Grid ColumnDefinitions="*,Auto">
+							<CheckBox Content="{Binding Content}" IsChecked="{Binding IsChecked}"/>
+							<Button Grid.Column="1" CommandParameter="{Binding .}"
+									Command="{Binding #Root.((vm:MainWindowViewModel)DataContext).RemoveItemCommand}">Delete</Button>
+						</Grid>
+					</DataTemplate>
+				</ItemsControl.ItemTemplate>
+			</ItemsControl>
+		</ScrollViewer>
+
+		<TextBox Grid.Row="2"
+				 Text="{Binding NewItemContent}"
+				 Watermark="Type your task here ...">
+			<TextBox.InnerRightContent>
+				<Button Margin="5"
+						Command="{Binding AddItemCommand}">Add</Button>
+			</TextBox.InnerRightContent>
+
+			<TextBox.KeyBindings>
+				<KeyBinding Gesture="Enter" Command="{Binding AddItemCommand}" />
+			</TextBox.KeyBindings>
+		</TextBox>
+	</Grid>
 </Window>
